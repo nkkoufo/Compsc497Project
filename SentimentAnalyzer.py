@@ -15,7 +15,7 @@ import random
 url = 'https://news.psu.edu/campus/erie'
 titles = []
 generated = []
-responses = ["was Great!", "was amzaing", "was fun", "had a great vibe", "was a vibe", "meh",
+responses = ["was Great!", "was amazing", "was fun", "had a great vibe", "was a vibe", "meh",
              "needed more music to be fun but was alright", "needed more music", "didnt have enough to do",
              "didnt have enought people there", "was awful", "sucked", "wasn't fun"]
 
@@ -41,6 +41,6 @@ nlu = NLU(version='2018-03-16',
 
 for item in generated:
     response = nlu.analyze(
-            url = item,
+            url = 'https://news.psu.edu/campus/erie',
             features=Features(keywords=KeywordsOptions(sentiment=True,emotion=True,limit=2))).get_result()
     print(json.dumps(response, indent=2))
