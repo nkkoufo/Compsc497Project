@@ -50,6 +50,7 @@ def make_GWE(text, title, link, score):
 #declarations
 baseurl = 'https://news.psu.edu'
 url = 'https://news.psu.edu/campus/erie'
+urlToAppend = 'https://news.psu.edu/campus/erie?type=top&page='
 titles = []
 generated = []
 responses = ["was Great!", "was amazing", "was fun", "had a great vibe", "was a vibe", "meh",
@@ -70,6 +71,39 @@ for i in range(len(titles)):
 """
 
 #Grab titles create text and store in array
+
+pages = 5
+#DONT TOUCH THESE
+i = 0
+x = 0
+while i < pages:
+    p = urlopen(urlToAppend + str(i))
+    soup = BeautifulSoup(p,"lxml")
+    soup.prettify
+    count1 = 0
+    count2 = 0
+    for row in soup.find_all('h2', {"class" : "node-title"}):
+        title = (row.text)
+        link = (baseurl + row.a['href'])
+        r = make_GWE("", title, link, 0.0)
+        count2 = count2 + 1
+        generated.append(r)
+    for tag in soup.find_all("div", {"class": "field-items"}):
+        if(tag.text and tag.p):
+            generated[x].text = (tag.text)
+            x = x + 1
+            count1 = count1 + 1 
+        
+    if count1 == count2:
+        print("noice")
+    else: 
+        print("No Fam")
+        print(count1)
+        print(count2)
+    i = i + 1
+    
+#old code
+    '''
 p = urlopen(url)
 soup = BeautifulSoup(p,"lxml")
 soup.prettify
@@ -81,11 +115,11 @@ for row in soup.find_all('h2', {"class" : "node-title"}):
     r = make_GWE("", title, link, 0.0)
     count2 = count2 + 1
     generated.append(r)
-i = 0
+x = 0
 for tag in soup.find_all("div", {"class": "field-items"}):
     if(tag.text and tag.p):
-        generated[i].text = (tag.text)
-        i = i + 1
+        generated[x].text = (tag.text)
+        x = x + 1
         count1 = count1 + 1 
         
 if count1 == count2:
@@ -93,7 +127,7 @@ if count1 == count2:
 else: 
     print("No Fam")
     print(count1)
-    print(count2)
+    print(count2)'''
     
     
     
