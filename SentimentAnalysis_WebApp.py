@@ -56,6 +56,7 @@ def make_GWE(text, title, link, score):
 
 baseurl = 'https://news.psu.edu'
 url = 'https://news.psu.edu/campus/erie'
+urlToAppend = 'https://news.psu.edu/campus/erie?type=top&page='
 titles = []
 generated = []
 responses = ["was Great!", "was amazing", "was fun", "had a great vibe", "was a vibe", "meh",
@@ -67,30 +68,35 @@ responseArray = []
 # Grab Titles, Create Text, and Store in Array
 ###############################################################################
 
-p = urlopen(url)
-soup = BeautifulSoup(p,"lxml")
-soup.prettify
-count1 = 0
-count2 = 0
-for row in soup.find_all('h2', {"class" : "node-title"}):
-    title = (row.text)
-    link = (baseurl + row.a['href'])
-    r = make_GWE("", title, link, 0.0)
-    count2 = count2 + 1
-    generated.append(r)
+pages = 5
+#DONT TOUCH THESE
 i = 0
-for tag in soup.find_all("div", {"class": "field-items"}):
-    if(tag.text and tag.p):
-        generated[i].text = (tag.text)
-        i = i + 1
-        count1 = count1 + 1 
+x = 0
+while i < pages:
+    p = urlopen(urlToAppend + str(i))
+    soup = BeautifulSoup(p,"lxml")
+    soup.prettify
+    count1 = 0
+    count2 = 0
+    for row in soup.find_all('h2', {"class" : "node-title"}):
+        title = (row.text)
+        link = (baseurl + row.a['href'])
+        r = make_GWE("", title, link, 0.0)
+        count2 = count2 + 1
+        generated.append(r)
+    for tag in soup.find_all("div", {"class": "field-items"}):
+        if(tag.text and tag.p):
+            generated[x].text = (tag.text)
+            x = x + 1
+            count1 = count1 + 1 
         
-if count1 == count2:
-    print("noice")
-else: 
-    print("No Fam")
-    print(count1)
-    print(count2)
+    if count1 == count2:
+        print("noice")
+    else: 
+        print("No Fam")
+        print(count1)
+        print(count2)
+    i = i + 1
     
 ###############################################################################
 # Sentiment Analysis
@@ -114,10 +120,6 @@ for item in generated:
     title = item.title
     generated[i].score = score
     i = i + 1
-    
-#generated[i].text to get the text you can also do .title, .score and link
-
-#print(generated[1].title)
 
 ###############################################################################
 # HTML Generation
@@ -175,8 +177,8 @@ plt.xlabel("Scores")
 plt.ylabel("Frequency of Scores")
 plt.title("Dispersion of Event Scores")
 plt.legend(legend)
-plt.xticks(range(0, 1))
-plt.yticks(range(1, 10))
+plt.xticks(np.arange(-0.5, 1, 0.5))
+plt.yticks(np.arange(0, 30, 5))
 plt.savefig('hist.png')
 plt.show()
 
